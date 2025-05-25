@@ -1,36 +1,140 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Contact Form & Email Relay 📨
+[![CodeQL](https://github.com/jordan-begian/contact-form-relay/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/jordan-begian/contact-form-relay/actions/workflows/github-code-scanning/codeql)<br>
+[![Build, Containerize, and Deploy Express API](https://github.com/jordan-begian/contact-form-relay/actions/workflows/deploy-backend.yml/badge.svg)](https://github.com/jordan-begian/contact-form-relay/actions/workflows/deploy-backend.yml)<br>
+[![Deploy to GitHub Pages](https://github.com/jordan-begian/contact-form-relay/actions/workflows/github-pages-deploy.yml/badge.svg)](https://github.com/jordan-begian/contact-form-relay/actions/workflows/github-pages-deploy.yml)<br>
+[![Terraform Apply](https://github.com/jordan-begian/contact-form-relay/actions/workflows/terraform.yml/badge.svg)](https://github.com/jordan-begian/contact-form-relay/actions/workflows/terraform.yml)
 
-## Getting Started
+A contact form to send a name, contact info, and message to an email relay API which will send the contact information to a target email address.
 
-First, run the development server:
+## Stack 📦
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- [Node.js](https://nodejs.org/docs/latest/api/)
+- [Next.js](https://nextjs.org/docs)
+- [React](https://react.dev/reference/react)
+- [Tailwind](https://tailwindcss.com/docs)
+- [Express](https://expressjs.com/en/guide/routing.html)
+- [Nodemailer](https://nodemailer.com/)
+- [RxJs](https://rxjs.dev/guide/overview)
+- [Typescript](https://www.typescriptlang.org/docs/)
+- [Docker](https://docs.docker.com/)
+- [Terraform](https://developer.hashicorp.com/terraform/docs)
+
+## Project Structure 🏗️
+
+```text
+├── .github/
+│   └── workflows/         # GitHub Actions jobs
+├── src/
+│   ├── pages_services/    # Logic for page components to use
+│   ├── pages/
+│   │   ├── components/    # Components of the UI
+│   │   ├── styles/        # Page styling
+│   │   ├── index.ts       # Main page assembling UI components
+│   │   └── _app.ts        # Core Next.js component
+│   ├── backend/
+│   │   ├── services/      # Logic for Email Relay API
+│   │   ├── controller/    # Handler for API request & responses
+│   │   ├── routes/        # Email Relay API endpoint config
+│   │   ├── app.ts         # Core API application config
+│   │   └── tsconfig.json  # Typescript compiler config for backend
+│   └── shared/
+│       ├── models/        # Types used throughout project
+│       └── utils/         # Shared utilities throughout project
+├── terraform/             # Terraform config files for cloud infrastructure
+│
+├── next.config.js         # Next.js config file
+├── package.json           # Node config file
+├── tsconfig.json          # Main Typescript compiler config
+├── eslint.config.mjs      # Eslint config file
+├── postcss.config.mjs     # PostCSS config for Tailwind
+├── Dockerfile             # Main Docker config file
+├── docker-compose.yml     # Docker container config file
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Setup 🛠️
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 1. Have node installed on dev machine
+  - [Node.js install instructions](https://nodejs.org/en/download)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 2. Install project dependencies via `npm`
+  - [About `npm`](https://docs.npmjs.com/about-npm)
 
-## Learn More
+```shell
+npm install
+```
 
-To learn more about Next.js, take a look at the following resources:
+### 3. Create a CORS `config` directory in project root
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```shell
+mkdir -p config; \
+  echo '[ "http://localhost:3000" ]' > config/cors-origins.json;
+```
+*This allows for the UI running locally on port `3000` to communicate with the API running locally on port `8080`*
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-## Deploy on Vercel
+*Note: The ports listed are the default values for Next.js & Express.js, they are configurable if other ports are desired*
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 4. Configure editor with local values for `process.env` variables used in project
+  - Variables located in [`ConfigHelper.ts`](./src/shared/utils/ConfigHelper.ts)
+  - Set local values for variables in terminal or in editor workspace settings
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```shell
+# Example: Set values in terminal
+export VARIABLE_NAME='variable-value'
+```
+
+
+```jsonc
+// Example: Set values in VS Code launch config
+{
+  "configurations": [
+    {
+      /* ...launch configuration... */
+      "env": {
+        "VARIABLE_NAME": "variable-value"
+      }
+    }
+  ]
+}
+```
+
+## How to Run Locally 💻
+
+The following commands can be ran in the terminal from the project root directory, or can be used by editors run/launch config.
+
+🔗 [*VS Code launch config documentation resource*](https://code.visualstudio.com/docs/debugtest/debugging-configuration)
+
+### Frontend
+
+```shell
+npm run build:ui; \
+  npm run dev:ui;
+```
+
+### Backend
+
+```shell
+npm run build:api; \
+  npm run dev:api;
+```
+
+## How to Deploy 📡
+
+Deployment accomplished using Terraform, Docker and GitHub Actions workflows. This way any changes pushed to the `main` branch will automatically be deployed to the cloud service provider.
+
+### Infrastructure
+
+- [Terraform](./terraform/main.tf)
+  - `outputs.tf` & `variables.tf` are support files for the `main.tf` config file
+- [GitHub Actions](./.github/workflows/terraform.yml)
+
+### Frontend
+
+- [GitHub Actions](./.github/workflows/github-pages-deploy.yml)
+
+### Backend
+
+- Docker
+  - [docker-compose.yml](./docker-compose.yml)
+  - [Dockerfile](./Dockerfile)
+- [GitHub Actions](./.github/workflows/deploy-backend.yml)
