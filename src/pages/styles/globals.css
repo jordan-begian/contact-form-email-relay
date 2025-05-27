@@ -1,1 +1,49 @@
-/* TODO: Setup styling */
+@import 'tailwindcss';
+
+.canvas-background {
+  @apply flex flex-col w-full min-h-screen;
+  @apply bg-gradient-to-tr from-neutral-950 from-75%  to-stone-950/95;
+}
+
+.contact-container {
+  @apply flex flex-col flex-grow;
+  @apply items-center justify-center;
+}
+
+.contact-form {
+  @apply bg-gradient-to-tr from-cyan-300/5 via-sky-200/10 to-amber-50/10;
+  @apply backdrop-brightness-200 backdrop-blur-2xl;
+  @apply inset-shadow-sm inset-shadow-neutral-100/30;
+  @apply shadow-2xl/45 shadow-amber-200/15;
+  @apply min-w-xs lg:max-w-full md:w-lg;
+  @apply p-4 md:p-8 rounded-2xl md:rounded-4xl;
+}
+
+.form-field {
+  @apply w-full border p-2 rounded-xl;
+  @apply bg-transparent inset-shadow-sm inset-shadow-neutral-950 backdrop-brightness-200;
+  @apply placeholder:font-mono;
+}
+
+.form-button {
+  @apply w-full py-3 border border-neutral-900 rounded-xl;
+  @apply inset-shadow-sm inset-shadow-white/60 hover:inset-shadow-white/30 active:inset-shadow-white/0;
+  @apply shadow-sm shadow-neutral-950;
+  @apply text-white font-mono;
+}
+
+.form-label {
+  @apply font-mono;
+  @apply text-stone-100;
+  @apply block mb-1 font-semibold;
+}
+
+.heading {
+  @apply mb-8 text-center;
+  @apply font-mono text-6xl font-semibold text-stone-100;
+  @apply text-shadow-lg/45 text-shadow-amber-200/55;
+}
+
+.footer {
+  @apply m-4 text-2xl brightness-75 text-shadow-lg/55 text-shadow-amber-200/50;
+}
