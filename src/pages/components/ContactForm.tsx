@@ -1,6 +1,7 @@
 import { ContactFormFields } from '@/shared/models/ContactFormFields';
 import React, { useState } from 'react';
 import FormField from './FormField';
+import client from '../services/MessageRelayClient';
 
 const ContactForm: React.FC = () => {
   const [form, setForm] = useState<ContactFormFields>({
@@ -14,9 +15,12 @@ const ContactForm: React.FC = () => {
     setForm({ ...form, [event.target.name]: event.target.value });
   };
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    // Handle form submission logic here
+    await client.relayAsEmail(form)
+      .catch((error: Error) => {
+        console.error('Error sending message:', error);
+      });
   };
 
   return (
