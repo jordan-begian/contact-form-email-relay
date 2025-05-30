@@ -14,9 +14,15 @@
   @apply bg-gradient-to-tr from-cyan-300/5 via-sky-200/10 to-amber-50/10;
   @apply backdrop-brightness-200 backdrop-blur-2xl;
   @apply inset-shadow-sm inset-shadow-neutral-100/30;
-  @apply shadow-2xl/45 shadow-amber-200/15;
+  @apply transition-shadow duration-1000;
   @apply min-w-xs lg:max-w-full md:w-lg;
   @apply p-4 md:p-8 rounded-2xl md:rounded-4xl;
+}
+
+.contact-form-error {
+  @apply mb-4;
+  @apply text-red-500 text-sm font-mono;
+  @apply transition-all duration-1000 ease-in-out;
 }
 
 .form-field {
