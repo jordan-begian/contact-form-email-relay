@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev:ui": "next dev",
+    "dev:api": "tsx watch --include \"./src/backend/**/*.ts\" --include \"./src/shared/**/*.ts\" --include \"./src/backend/config/*\" --exclude \"./src/pages/**/*.ts\" ./src/backend/app.ts",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -11,8 +12,10 @@
   "dependencies": {
     "@tailwindcss/postcss": "^4.1.7",
     "autoprefixer": "^10.4.21",
+    "cors": "^2.8.5",
     "express": "^5.1.0",
     "next": "15.3.2",
+    "nodemailer": "^7.0.3",
     "postcss": "^8.5.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
@@ -21,11 +24,15 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@types/cors": "^2.8.18",
+    "@types/express": "^5.0.2",
     "@types/node": "^20",
+    "@types/nodemailer": "^6.4.17",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.3.2",
+    "tsx": "^4.19.4",
     "typescript": "^5"
   }
 }
