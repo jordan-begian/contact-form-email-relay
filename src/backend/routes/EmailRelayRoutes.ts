@@ -1,8 +1,8 @@
-import { Router } from "express";
 import controller from "@/backend/controller/EmailRelayController";
+import { Router } from "express";
 
-export const routes = (router: Router): void => {
+const routes = (router: Router): void => {
   router.post("/email", controller.emailRelay);
 };
 
-export default routes;
+export { routes };
