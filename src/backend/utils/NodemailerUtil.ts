@@ -2,14 +2,15 @@ import { Message } from '@/backend/models/RelayModels';
 import config from '@/shared/utils/ConfigHelper';
 import { logger } from '@/shared/utils/LoggerConfig';
 import { StatusCodes } from 'http-status-codes';
+import nodemailer, { SendMailOptions, Transporter } from 'nodemailer';
 import { catchError, defer, Observable, switchMap, tap } from 'rxjs';
 import { buildRelayAPIError } from './ErrorHandler';
 
-const GMAIL_ACCOUNT = process.env.GOOGLE_USER_ACCOUNT as string;
-const CLIENT_ID = process.env.GOOGLE_CLIENT_ID as string;
-const CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET as string;
-const REFRESH_TOKEN = process.env.GOOGLE_REFRESH_TOKEN as string;
-const DESTINATION_EMAIL = process.env.DESTINATION_EMAIL as string;
+const GMAIL_ACCOUNT = config.nodemailer.GMAIL_ACCOUNT;
+const CLIENT_ID = config.nodemailer.GOOGLE_CLIENT_ID;
+const CLIENT_SECRET = config.nodemailer.GOOGLE_CLIENT_SECRET;
+const REFRESH_TOKEN = config.nodemailer.GOOGLE_REFRESH_TOKEN;
+const DESTINATION_EMAIL = config.nodemailer.DESTINATION_EMAIL;
 
 const transporter: Transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -23,16 +24,37 @@ const transporter: Transporter = nodemailer.createTransport({
 });
 
 const mailer = {
-  sendEmail: async (subject: string, body: string) => {
-    const options: SendMailOptions = {
-      from: GMAIL_ACCOUNT,
-      to: DESTINATION_EMAIL,
-      subject: subject,
-      // TODO: Update to use HTML rich text format
-      text: body,
-    };
-
-    await transporter.sendMail(options);
+  sendEmail: (message: Observable<Message>): Observable<void> => {
+    return message.pipe(
+      switchMap((message: Message) =>
+        defer(async () => {
+          const options: SendMailOptions = {
+            from: GMAIL_ACCOUNT,
+            to: DESTINATION_EMAIL,
+            subject: message.subject,
+            // TODO: Update to use HTML rich text format
+            text: message.body,
+          };
+          await transporter.sendMail(options);
+        })
+        .pipe(
+          tap(() => logger.info({
+            message: 'Email sent successfully via Nodemailer',
+          })),
+          catchError((error) => {
+            logger.error({
+              message: 'Error sending email via Nodemailer',
+              error: error.message,
+              raw: error.toString(),
+            });
+            throw buildRelayAPIError(
+              new Error('Failed to send email via Nodemailer'),
+              StatusCodes.INTERNAL_SERVER_ERROR
+            );
+          }),
+        )
+      )
+    )
   }
 };
 

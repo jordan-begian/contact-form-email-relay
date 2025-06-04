@@ -1,22 +1,40 @@
-import express, { Express } from 'express';
-import cors from 'cors';
+import { router } from '@/backend/routes/index';
 import config from '@/shared/utils/ConfigHelper';
-import router from '@/backend/routes/index';
+import { globalErrorHandler } from '@/backend/utils/ErrorHandler';
+import {
+  logger,
+  requestLogger,
+  requestTracer
+} from '@/shared/utils/LoggerConfig';
+import cors from 'cors';
+import express, { Express } from 'express';
 
-const ALLOWED_ORIGINS: string[] = config.getAllowedOrigins();
-const PORT: number = parseInt(process.env.PORT as string);
+const ALLOWED_ORIGINS: string[] = config.cors.ALLOWED_ORIGINS;
+const PORT: number = config.PORT;
 const app: Express = express();
 
+app.use(
+  requestTracer,
+  requestLogger
+);
 
 app.use(
-  cors({ origin: ALLOWED_ORIGINS }),
   express.json(),
+  cors({ origin: ALLOWED_ORIGINS }),
   router
 );
 
-app.listen(PORT, () => {
-  console.log({
-    message: `Server is running on port ${PORT}`,
-    timestamp: new Date().toLocaleString('sv-SE').replace(' ', 'T'),
-  });
+app.use(globalErrorHandler);
+
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`
+██████╗ ███████╗██╗      █████╗ ██╗   ██╗     █████╗ ██████╗ ██╗
+██╔══██╗██╔════╝██║     ██╔══██╗╚██╗ ██╔╝    ██╔══██╗██╔══██╗██║
+██████╔╝█████╗  ██║     ███████║ ╚████╔╝     ███████║██████╔╝██║
+██╔══██╗██╔══╝  ██║     ██╔══██║  ╚██╔╝      ██╔══██║██╔═══╝ ██║
+██║  ██║███████╗███████╗██║  ██║   ██║       ██║  ██║██║     ██║
+╚═╝  ╚═╝╚══════╝╚══════╝╚═╝  ╚═╝   ╚═╝       ╚═╝  ╚═╝╚═╝     ╚═╝
+----------------------------------------------------------------
+    `);
+  logger.info(`Server is running on port ${PORT}`);
 });

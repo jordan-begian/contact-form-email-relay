@@ -1,38 +1,45 @@
 {
-  "name": "contact-form-email-relay",
+  "name": "contact-form-relay",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev:ui": "next dev",
-    "dev:api": "tsx watch --include \"./src/backend/**/*.ts\" --include \"./src/shared/**/*.ts\" --include \"./src/backend/config/*\" --exclude \"./src/pages/**/*.ts\" ./src/backend/app.ts",
-    "build": "next build",
+    "build:ui": "next build",
+    "build:api": "rm -rf dist; tsc -p ./src/backend/tsconfig.json; tsc-alias -p ./src/backend/tsconfig.json; tsc-esm-fix dist/backend --ext .js;",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "dev:api": "tsx watch --include \"src/backend/**/*.ts\" --include \"src/shared/**/*.ts\" --include \"src/backend/config/*\" --exclude \"src/pages/**/*.ts\" src/backend/app.ts"
   },
   "dependencies": {
-    "@tailwindcss/postcss": "^4.1.7",
-    "autoprefixer": "^10.4.21",
     "cors": "^2.8.5",
     "express": "^5.1.0",
-    "next": "15.3.2",
+    "http-status-codes": "^2.3.0",
+    "morgan": "^1.10.0",
     "nodemailer": "^7.0.3",
-    "postcss": "^8.5.3",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
     "rxjs": "^7.8.2",
-    "tailwindcss": "^4.1.7"
+    "winston": "^3.17.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4.1.7",
     "@types/cors": "^2.8.18",
     "@types/express": "^5.0.2",
-    "@types/node": "^20",
+    "@types/morgan": "^1.9.9",
+    "@types/node": "22.15.30",
     "@types/nodemailer": "^6.4.17",
-    "@types/react": "^19",
+    "@types/react": "19.1.6",
     "@types/react-dom": "^19",
+    "autoprefixer": "^10.4.21",
     "eslint": "^9",
     "eslint-config-next": "15.3.2",
+    "next": "15.3.2",
+    "postcss": "^8.5.3",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "tailwindcss": "^4.1.7",
+    "tsc-alias": "^1.8.16",
+    "tsc-esm-fix": "^3.1.2",
     "tsx": "^4.19.4",
-    "typescript": "^5"
+    "typescript": "5.8.3"
   }
 }
