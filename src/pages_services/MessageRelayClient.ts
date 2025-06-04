@@ -1,6 +1,6 @@
 import { ContactFormFields } from "@/shared/models/ContactFormFields";
 
-const EMAIL_RELAY_URL = process.env.EMAIL_RELAY_URL as string;
+const EMAIL_RELAY_URL = process.env.NEXT_PUBLIC_RELAY_URL as string;
 
 const send = async (
   path: string,
@@ -16,7 +16,7 @@ const send = async (
 
 const client = {
   relayAsEmail: async (form: ContactFormFields): Promise<void> => {
-    return await send(EMAIL_RELAY_URL, 'POST', form)
+    return await send(`${EMAIL_RELAY_URL}/email`, 'POST', form)
       .then((response: Response) => {
         if (!response.ok) {
           throw new Error(`Error: ${response.status} ${response.statusText}`);

@@ -1,7 +1,7 @@
 import { ContactFormFields } from '@/shared/models/ContactFormFields';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import client from '@/pages_services/MessageRelayClient';
 import FormField from './FormField';
-import client from '../services/MessageRelayClient';
 
 const ContactForm: React.FC = () => {
   const [form, setForm] = useState<ContactFormFields>({
