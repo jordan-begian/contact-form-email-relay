@@ -2,14 +2,16 @@ import { ContactFormFields } from '@/shared/models/ContactFormFields';
 import React, { useEffect, useState } from 'react';
 import client from '@/pages_services/MessageRelayClient';
 import FormField from './FormField';
+import { of } from 'rxjs';
 
 const ContactForm: React.FC = () => {
-  const [form, setForm] = useState<ContactFormFields>({
+  const initialFormState: ContactFormFields = {
     firstName: '',
     lastName: '',
     contactInfo: '',
     message: '',
-  });
+  };
+  const [form, setForm] = useState<ContactFormFields>(initialFormState);
   const [error, setError] = useState<string | undefined>(undefined);
   const [visibleError, setVisibleError] = useState<string | undefined>(undefined);
 
@@ -29,14 +31,20 @@ const ContactForm: React.FC = () => {
     }
   };
 
-  const handleSubmit = async (event: React.FormEvent) => {
+  const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     setError(undefined);
-    await client.relayAsEmail(form)
-      .catch((error: Error) => {
-        console.error('Error sending message:', error);
-        setError('There was an error sending your message. Please try again later.');
-      });
+    client.relayAsEmail(of(form))
+      .subscribe({
+        next: () => { },
+        error: (error: Error) => {
+          console.error('Error sending message:', error);
+          setError('There was an error sending your message. Please try again later.');
+        },
+        complete: () => {
+          setForm(initialFormState);
+        }
+    });
   };
 
   return (
